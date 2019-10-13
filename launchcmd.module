@@ -1,0 +1,11 @@
+#%Module1.0
+
+set currentdir [file dirname $ModulesCurrentModulefile]
+conflict financebuddy
+
+prepend-path PATH $currentdir/bin
+prepend-path PYTHONPATH $currentdir/python
+
+setenv LAUNCHCMD_PROJECT_ROOT $currentdir/tests/filesystem/projects
+setenv LAUNCHCMD_SOFTWARE_ROOT $currentdir/tests/filesystem/software
+setenv LAUNCHCMD_PIPELINE_PROJECT pipeline

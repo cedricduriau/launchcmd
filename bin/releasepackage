@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+
+# stdlib modules
+import os
+import sys
+import argparse
+
+# tool modules
+from releasepackage.ui.releasepackagedialog import ReleasePackageDialog
+from releasepackage.ui.packagenameformdialog import PackageNameFormDialog
+from launchcmd import manifestutils
+
+# third party modules
+from PySide2 import QtWidgets
+
+
+def _build_parser():
+    """Builds the command line interface.
+
+    :rtype: argparse.ArgumentParser
+    """
+    parser = argparse.ArgumentParser(prog="releasepackage")
+
+    # positional arguments
+    helper = "Manifest filepath of the package to release."
+    parser.add_argument("manifest", nargs="?", help=helper)
+
+    return parser
+
+
+if __name__ == "__main__":
+    parser = _build_parser()
+    namespace = parser.parse_args()
+
+    # build app
+    app = QtWidgets.QApplication.instance() or QtWidgets.QApplication(sys.argv)
+
+    path = namespace.manifest
+    if not path:
+        # ask user to create a package file
+        msg = "No package file given, do you wish to create one?"
+        result = QtWidgets.QMessageBox.question(None, "ReleasePackage", msg)
+        if result == QtWidgets.QMessageBox.No:
+            sys.exit(0)
+
+        # ask user to provie a package name
+        form = PackageNameFormDialog()
+        if not form.exec_():
+            sys.exit(0)
+
+        # build path
+        repo_dir = os.getcwd()
+        package_name = form.package_name
+
+        # write empty package
+        path = manifestutils.build_manifest_path(repo_dir, package_name)
+        if not os.path.exists(path):
+            manifestutils.write_manifest(path, {})
+
+    # launch gui
+    tool = ReleasePackageDialog(path)
+    tool.show()
+
+    # run loop
+    sys.exit(app.exec_())

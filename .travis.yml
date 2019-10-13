@@ -1,0 +1,20 @@
+language: python
+python:
+  - "3.6"
+stages:
+  - check
+  - test
+install:
+  - pip install flake8==3.6.0
+  - pip install radon==2.4.0
+  - pip install pytest==4.0.0
+  - pip install pytest-cov==2.6.0
+  - pip install codecov==2.0.15
+  - pip install ./
+jobs:
+  include:
+    - stage: check
+      script: ./runcheck
+script: ./runtests
+after_success:
+  - codecov
