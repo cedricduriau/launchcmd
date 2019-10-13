@@ -1,0 +1,25 @@
+name: launchcmd
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install dependencies
+      run: |
+        pip install flake8==3.6.0
+        pip install radon==2.4.0
+        pip install pytest==4.0.0
+        pip install pytest-cov==2.6.0
+        pip install codecov==2.0.15
+        pip install ./
+    - name: Lint with flake8
+      run: |
+        ./runcheck
+    - name: Test with pytest
+      run: |
+        ./runtests
