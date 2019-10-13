@@ -1,6 +1,6 @@
 # LaunchCMD
 
-[![build](https://travis-ci.com/cedricduriau/launchcmd.svg?branch=master)](https://travis-ci.com/cedricduriau/launchcmd)
+[![build](https://github.com/cedricduriau/launchcmd/workflows/Build/badge.svg)](https://github.com/cedricduriau/launchcmd/actions)
 [![platform](https://img.shields.io/badge/platform-linux--64-lightgrey.svg)](https://img.shields.io/badge/platform-linux--64-lightgrey.svg)
 [![license](https://img.shields.io/badge/license-GPLv3-green.svg)](https://img.shields.io/badge/license-GPLv3-green.svg)
 [![python](https://img.shields.io/badge/python-3.6-blue.svg)](https://img.shields.io/badge/python-3.6-blue.svg)

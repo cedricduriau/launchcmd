@@ -1,4 +1,4 @@
-name: launchcmd
+name: Build
 on: [push]
 jobs:
   build:
