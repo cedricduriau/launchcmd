@@ -11,9 +11,6 @@ from launchcmd import settings
 REGEX_PACKAGE_NAME = re.compile(r"^([a-zA-Z0-9]+)$")
 
 
-# =============================================================================
-# public
-# =============================================================================
 def validate_package_name(package_name):
     """
     Validates the name of a package.
@@ -31,12 +28,43 @@ def validate_package_name(package_name):
 
 
 def build_package_release_name(package_name, version):
+    """Returns the name of a release for a package.
+
+    :param package_name: Name of the package to release.
+    :type package_name: str
+
+    :param version: Version of the release.
+    :type version: str
+
+    :rtype: str
+    """
     return "{}#{}".format(package_name, version)
 
 
 def release_package(repository_dir, version, comment):
+    """Releases a package.
+
+    Releasing a package will do the following:
+    1. The repository being released will be tagged.
+    2. The repository will be copied/cloned to the software bank.
+    3. All write permissions will be removed from copied release into software
+       bank to block any edits from happening.
+
+    :param repository_dir: Directory of the repository to release.
+    :type repository_dir: str
+
+    :param version: Version of the release.
+    :type version: str
+
+    :param comment: Comment of the release.
+    :type comment: str
+    """
     # validate package dir is a repository
     gitutils.validate_repository_dir(repository_dir)
+
+    # TODO: validate version
+    # TODO: validate comment
+    # TODO: support/store comment (create log inside release dir?)
 
     # ensure everything is pushed to git in current branch
     git_status = gitutils.get_status(repository_dir)
