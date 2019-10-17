@@ -106,3 +106,28 @@ def get_level_type(dir_level):
     level_type = _get_level_type_from_file(level_type_file)
 
     return level_type
+
+
+def get_level_common_dir(level_dir):
+    """Returns the common directory of a level.
+
+    :param dir_level: Directory of a level.
+    :type dir_level: str
+
+    :rtype: str
+    """
+    common_dir = os.path.join(level_dir, ".common")
+    return common_dir
+
+
+def get_level_installed_packages_dir(level_dir):
+    """Returns the installed_packagae directory of a level.
+
+    :param dir_level: Directory of a level.
+    :type dir_level: str
+
+    :rtype: str
+    """
+    common_dir = get_level_common_dir(level_dir)
+    installed_packges_dir = os.path.join(common_dir, "packages")
+    return installed_packges_dir
