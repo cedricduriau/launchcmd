@@ -17,7 +17,7 @@ def get_level_env_vars(level_dirs):
 
     for level_dir in level_dirs:
         level_type = pathutils.get_level_type(level_dir)
-        env_var_name = "LAUNCHCMD_LEVEL_{}".format(level_type)
+        env_var_name = "LAUNCHCMD_LEVEL_{}".format(level_type.upper())
         env_vars[env_var_name] = os.path.basename(level_dir)
 
     return env_vars
