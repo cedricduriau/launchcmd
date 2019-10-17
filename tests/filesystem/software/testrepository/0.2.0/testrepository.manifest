@@ -1,0 +1,12 @@
+{
+    "package": "testrepository",
+    "version": "0.2.0",
+    "comment": "- second release",
+    "files": [
+        "bin/testrepository",
+        "python/testrepository/__init__.py",
+        "python/testrepository/testrepository.py",
+        ".gitignore",
+        "testrepository.module"
+    ]
+}
