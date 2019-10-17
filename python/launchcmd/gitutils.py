@@ -1,36 +1,10 @@
 # stdlib modules
 import os
-import subprocess
+
+# tool modules
+from launchcmd import shellutils
 
 
-# =============================================================================
-# private
-# =============================================================================
-def _run_check_output(cmd):
-    """Runs a command and returns its output.
-
-    :param cmd: Command to run.
-    :type cmd: str
-
-    :rtype: list[str]
-    """
-    # check output
-    output = subprocess.check_output(cmd, shell=True)
-
-    # cast to string, remove surrounding whitespaces and traing line separator
-    output_str = output.decode("utf-8")
-    output_str = output_str.strip()
-    output_str = output_str.rstrip(os.linesep)
-
-    # split by line separator
-    lines = [] if not output_str else output_str.split(os.linesep)
-
-    return lines
-
-
-# =============================================================================
-# public
-# =============================================================================
 def validate_directory_is_repository(directory):
     """Validates a repository has a .git directory.
 
@@ -52,7 +26,7 @@ def get_status(repository_dir):
     :rtype: list[str]
     """
     cmd = "cd {} && git status --porcelain".format(repository_dir)
-    status = _run_check_output(cmd)
+    status = shellutils.run_check_output(cmd)
     return status
 
 
@@ -65,7 +39,7 @@ def get_tags(repository_dir):
     :rtype: list[str]
     """
     cmd = "cd {} && git tag".format(repository_dir)
-    tags = _run_check_output(cmd)
+    tags = shellutils.run_check_output(cmd)
     return tags
 
 
@@ -76,7 +50,7 @@ def pull_tags(repository_dir):
     :type repository_dir: str
     """
     cmd = "cd {} && git pull --quiet --tags".format(repository_dir)
-    tags = _run_check_output(cmd)
+    tags = shellutils.run_check_output(cmd)
     return tags
 
 
@@ -90,7 +64,7 @@ def create_tag(repository_dir, tag_name):
     :type tag_name: str
     """
     cmd = "cd {} && git tag {}".format(repository_dir, tag_name)
-    _run_check_output(cmd)
+    shellutils.run_check_output(cmd)
 
 
 def push_tag(repository_dir, tag_name):
@@ -103,7 +77,7 @@ def push_tag(repository_dir, tag_name):
     :type tag_name: str
     """
     cmd = "cd {} && git push --quiet origin {}".format(repository_dir, tag_name)
-    _run_check_output(cmd)
+    shellutils.run_check_output(cmd)
 
 
 def clone_repository(repository_dir, target_dir):
@@ -124,4 +98,4 @@ def clone_repository(repository_dir, target_dir):
         target_dir += os.sep
 
     cmd = "cp -R {} {}".format(repository_dir, target_dir)
-    _run_check_output(cmd)
+    shellutils.run_check_output(cmd)
