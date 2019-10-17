@@ -31,29 +31,16 @@ def _run_check_output(cmd):
 # =============================================================================
 # public
 # =============================================================================
-def validate_repository_dir(repository_dir):
+def validate_directory_is_repository(directory):
     """Validates a repository has a .git directory.
 
-    :param repository_dir: Directory of a repository.
-    :type repository_dir: str
+    :param directory: Directory of a repository.
+    :type directory: str
     """
-    contents = os.listdir(repository_dir)
+    contents = os.listdir(directory)
     if ".git" not in contents:
         msg = "following directory is not a git repository, no .git directory found: {}"
-        raise IOError(msg.format(repository_dir))
-
-
-def get_tags(repository_dir):
-    """Returns all tags of a repository.
-
-    :param repository_dir: Directory of a repository.
-    :type repository_dir: str
-
-    :rtype: list[str]
-    """
-    cmd = "cd {} && git tag".format(repository_dir)
-    tags = _run_check_output(cmd)
-    return tags
+        raise IOError(msg.format(directory))
 
 
 def get_status(repository_dir):
@@ -69,6 +56,30 @@ def get_status(repository_dir):
     return status
 
 
+def get_tags(repository_dir):
+    """Returns all tags of a repository.
+
+    :param repository_dir: Directory of a repository.
+    :type repository_dir: str
+
+    :rtype: list[str]
+    """
+    cmd = "cd {} && git tag".format(repository_dir)
+    tags = _run_check_output(cmd)
+    return tags
+
+
+def pull_tags(repository_dir):
+    """Pulls all tags from the remote locally.
+
+    :param repository_dir: Directory of a repository.
+    :type repository_dir: str
+    """
+    cmd = "cd {} && git pull --quiet --tags".format(repository_dir)
+    tags = _run_check_output(cmd)
+    return tags
+
+
 def create_tag(repository_dir, tag_name):
     """Creates a new tag in a repository.
 
@@ -79,6 +90,19 @@ def create_tag(repository_dir, tag_name):
     :type tag_name: str
     """
     cmd = "cd {} && git tag {}".format(repository_dir, tag_name)
+    _run_check_output(cmd)
+
+
+def push_tag(repository_dir, tag_name):
+    """Pushes a tag to the remote.
+
+    :param repository_dir: Directory of a repository.
+    :type repository_dir: str
+
+    :param tag_name: Name of the tag to push.
+    :type tag_name: str
+    """
+    cmd = "cd {} && git push --quiet origin {}".format(repository_dir, tag_name)
     _run_check_output(cmd)
 
 
