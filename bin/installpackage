@@ -13,12 +13,13 @@ def _build_parser():
 
     :rtype: argparse.ArgumentParser
     """
-    parser = argparse.ArgumentParser(prog="installpackage")
+    description = "Installs a package release on a level."
+    parser = argparse.ArgumentParser(prog="installpackage", description=description)
 
     # required arguments
     req_args = parser.add_argument_group("required arguments:")
 
-    helper = "relative or absolute location of level to install on"
+    helper = "relative or absolute location of level to install to"
     req_args.add_argument("-l", "--location", required=True, help=helper)
 
     helper = "name of the released package to install"
