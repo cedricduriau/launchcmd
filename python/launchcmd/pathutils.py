@@ -121,7 +121,7 @@ def get_level_common_dir(level_dir):
 
 
 def get_level_installed_packages_dir(level_dir):
-    """Returns the installed_packagae directory of a level.
+    """Returns the installed packages directory of a level.
 
     :param dir_level: Directory of a level.
     :type dir_level: str
@@ -131,3 +131,16 @@ def get_level_installed_packages_dir(level_dir):
     common_dir = get_level_common_dir(level_dir)
     installed_packges_dir = os.path.join(common_dir, "packages")
     return installed_packges_dir
+
+
+def get_level_installed_tags_dir(level_dir):
+    """Returns the installed tags directory of a level.
+
+    :param dir_level: Directory of a level.
+    :type dir_level: str
+
+    :rtype: str
+    """
+    common_dir = get_level_common_dir(level_dir)
+    installed_tags_dir = os.path.join(common_dir, "tags")
+    return installed_tags_dir
