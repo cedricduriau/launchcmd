@@ -9,15 +9,15 @@ from launchcmd import settings
 # =============================================================================
 # private
 # =============================================================================
-def _get_level_type_files(dir_level):
+def _get_level_type_files(level_dir):
     """Returns the level type files insie a level directory.
 
-    :param dir_level: Directory of a level.
-    :type dir_level: str
+    :param level_dir: Directory of a level.
+    :type level_dir: str
 
     :rtype: list[str]
     """
-    glob_path = os.path.join(dir_level, ".launchcmd_level_*")
+    glob_path = os.path.join(level_dir, ".launchcmd_level_*")
     files = glob.glob(glob_path)
     return files
 
@@ -44,7 +44,7 @@ def _get_level_type_from_file(filepath):
     :rtype: str
     """
     basename = os.path.basename(filepath)
-    level_type = basename.replace(".launchcmd_level_", "").upper()
+    level_type = basename.replace(".launchcmd_level_", "")
     return level_type
 
 
@@ -86,21 +86,21 @@ def get_level_directory(location):
     return level_dirs[-1]
 
 
-def get_level_type(dir_level):
+def get_level_type(level_dir):
     """Gets the level type from a level directory.
 
-    :param dir_level: Directory of a level.
-    :type dir_level: str
+    :param level_dir: Directory of a level.
+    :type level_dir: str
 
     :rtype: str
     """
-    level_type_files = _get_level_type_files(dir_level)
+    level_type_files = _get_level_type_files(level_dir)
 
     try:
         _validate_level_type_files(level_type_files)
     except IOError as e:
         msg = "location {} is not a valid level, {}"
-        raise IOError(msg.format(dir_level, str(e)))
+        raise IOError(msg.format(level_dir, str(e)))
 
     level_type_file = level_type_files[0]
     level_type = _get_level_type_from_file(level_type_file)
@@ -111,8 +111,8 @@ def get_level_type(dir_level):
 def get_level_common_dir(level_dir):
     """Returns the common directory of a level.
 
-    :param dir_level: Directory of a level.
-    :type dir_level: str
+    :param level_dir: Directory of a level.
+    :type level_dir: str
 
     :rtype: str
     """
@@ -123,8 +123,8 @@ def get_level_common_dir(level_dir):
 def get_level_installed_packages_dir(level_dir):
     """Returns the installed packages directory of a level.
 
-    :param dir_level: Directory of a level.
-    :type dir_level: str
+    :param level_dir: Directory of a level.
+    :type level_dir: str
 
     :rtype: str
     """
@@ -136,8 +136,8 @@ def get_level_installed_packages_dir(level_dir):
 def get_level_installed_tags_dir(level_dir):
     """Returns the installed tags directory of a level.
 
-    :param dir_level: Directory of a level.
-    :type dir_level: str
+    :param level_dir: Directory of a level.
+    :type level_dir: str
 
     :rtype: str
     """
