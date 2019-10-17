@@ -50,18 +50,18 @@ def _build_unset_env_vars_command(env_vars):
 # =============================================================================
 # public
 # =============================================================================
-def build_launchcmd_command(dir_level):
+def build_launchcmd_command(level_dir):
     """Builds the command to set the environment according to a level.
 
-    :param dir_level: Directory of the level to set environment for.
-    :type dir_level: str
+    :param level_dir: Directory of the level to set environment for.
+    :type level_dir: str
 
     :rtype: str
     """
     commands = []
 
     # get all parent levels related to given level
-    level_dirs = pathutils.get_level_directories(dir_level)
+    level_dirs = pathutils.get_level_directories(level_dir)
 
     # unload previously loaded modules
     snaphot_loaded_modules = moduleutils.get_snapshot_loaded_modules()
@@ -95,7 +95,7 @@ def build_launchcmd_command(dir_level):
     # TODO: build PS1 location as prefix in bold
 
     # build cd command
-    cmd_command = _build_cd_command(dir_level)
+    cmd_command = _build_cd_command(level_dir)
     commands.append(cmd_command)
 
     # build command string
