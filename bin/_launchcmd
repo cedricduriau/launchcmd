@@ -28,6 +28,6 @@ if __name__ == "__main__":
 
     location = namepsace.location
 
-    dir_level = pathutils.get_level_directory(location)
-    cmd = cmdutils.build_launchcmd_command(dir_level)
+    level_dir = pathutils.get_level_directory(location)
+    cmd = cmdutils.build_launchcmd_command(level_dir)
     print(cmd)
