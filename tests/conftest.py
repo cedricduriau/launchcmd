@@ -16,6 +16,12 @@ def file_system_root():
 
 
 @pytest.fixture
+def software_root(file_system_root):
+    software_root = os.path.join(file_system_root, "software")
+    return software_root
+
+
+@pytest.fixture
 def patch_project_root(file_system_root):
     project_root = os.path.join(file_system_root, "projects")
     os.environ["LAUNCHCMD_PROJECT_ROOT"] = project_root
@@ -23,8 +29,7 @@ def patch_project_root(file_system_root):
 
 
 @pytest.fixture
-def patch_software_root(file_system_root):
-    software_root = os.path.join(file_system_root, "software")
+def patch_software_root(software_root):
     os.environ["LAUNCHCMD_SOFTWARE_ROOT"] = software_root
     reload(settings)
 
