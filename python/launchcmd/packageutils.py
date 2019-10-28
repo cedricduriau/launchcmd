@@ -78,24 +78,24 @@ def validate_comment(comment):
         raise ValueError("comment is empty")
 
 
-def validate_files(files, module_file):
+def validate_files(files, module_filepath):
     """Validates files to release.
 
     :param files: Absolute paths of files to release.
     :type files: list[str]
 
-    :param module_file: Absolute path of package module file to release.
-    :type module_file: str
+    :param module_filepath: Absolute path of package module file to release.
+    :type module_filepath: str
     """
     if not files:
         raise ValueError("at least one file must be provided for release")
 
     for f in files:
-        if f == module_file:
+        if f == module_filepath:
             break
     else:
         msg = "module file must be provided for release: {}"
-        raise ValueError(msg.format(module_file))
+        raise ValueError(msg.format(module_filepath))
 
 
 def get_package_release_directory(package_name, version):
