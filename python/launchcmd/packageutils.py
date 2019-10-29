@@ -15,6 +15,38 @@ REGEX_PACKAGE_NAME = re.compile(r"^([a-zA-Z0-9]+)$")
 REGEX_VERSION = re.compile(r"^([\d]+[.][\d]+[.][\d]+)$")
 
 
+# =============================================================================
+# private
+# =============================================================================
+def _release_package_contents(repository_dir, relative_filepaths, release_dir):
+    """Copies the contents of a package to a directory.
+
+    :param repository_dir: Directory of the repository holding files to copy.
+    :type repository_dir: str
+
+    :param relative_filepaths: Relative paths of files to copy from repository.
+    :type relative_filepaths: list[str]
+
+    :param release_dir: Release directory to copy repository files to.
+    :type release_dir: str
+    """
+    if not os.path.exists(release_dir):
+        os.makedirs(release_dir)
+
+    for relative_filepath in relative_filepaths:
+        src_file = os.path.join(repository_dir, relative_filepath)
+        dst_file = os.path.join(release_dir, relative_filepath)
+
+        dst_dir = os.path.dirname(dst_file)
+        if not os.path.exists(dst_dir):
+            os.makedirs(dst_dir)
+
+        shutil.copy2(src_file, dst_file)
+
+
+# =============================================================================
+# public
+# =============================================================================
 def build_package_release_tag(package_name, version):
     """Returns the name of a release for a package.
 
@@ -188,16 +220,15 @@ def release_package(repository_dir, package_name, version, comment, files):
     gitutils.create_tag(repository_dir, tag_name)
     gitutils.push_tag(repository_dir, tag_name)
 
-    # copy/clone package inside software bank
-    os.makedirs(release_dir)
-    gitutils.clone_repository(repository_dir, release_dir)
+    # copy files to release location
+    relative_paths = [f.replace(repository_dir, "").lstrip(os.sep) for f in files]
+    _release_package_contents(repository_dir, relative_paths, release_dir)
 
     # write manifest
-    rel_files = [f.replace(repository_dir, "").lstrip(os.sep) for f in files]
     manifest = manifestutils.build_manifest(package_name=package_name,
                                             version=version,
                                             comment=comment,
-                                            files=rel_files)
+                                            files=relative_paths)
     manifest_path = manifestutils.build_manifest_filepath(release_dir, package_name)
     manifestutils.write_manifest(manifest_path, manifest)
 
@@ -282,9 +313,9 @@ def install_package(level_dir, package_name, version):
     if not os.path.exists(install_dir):
         os.makedirs(install_dir, 0o2775)
 
-    # TODO: do not copy all, read specific files to copy from manifest
+    # remove write permission from installed package
     gitutils.clone_repository(release_dir, install_dir)
-    subprocess.check_call(["chmod", "-R", "a-w", release_dir])
+    subprocess.check_call(["chmod", "-R", "a-w", install_dir])
 
     # write tag
     installed_tags_dir = pathutils.get_level_installed_tags_dir(level_dir)
