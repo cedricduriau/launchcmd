@@ -33,15 +33,29 @@ def _validate_manifest_files(directory, files):
         msg = "no manifest file (*.manifest) found in {}"
         raise IOError(msg.format(directory))
 
-    if len(files) > 1:
-        msg = "more than one manifest file (*.manifest) found in {}"
-        raise IOError(msg.format(directory))
+
+def _validate_manifest_file(manifest_files, package_name):
+    """Validates that a list of manifest files contains a package manifest.
+
+    :param manifest_files: Manifest files to search package manifest in.
+    :type manifest_files: list[str]
+
+    :param package_name: Name of a package to validate manifest file for.
+    :type package_name: str
+    """
+    for manifest_file in manifest_files:
+        basename = os.path.splitext(os.path.basename(manifest_file))[0]
+        if basename == package_name:
+            return
+
+    msg = "no manifest file (*.manifest) found for package {}"
+    raise IOError(msg.format(package_name))
 
 
 # =============================================================================
 # public
 # =============================================================================
-def get_manifest_path_from_directory(repo_dir):
+def get_manifest_path_from_directory(repo_dir, package_name):
     """Returns the manifest file from a directory.
 
     :param directory: Directory to get manifest file from.
@@ -51,6 +65,7 @@ def get_manifest_path_from_directory(repo_dir):
     """
     manifest_files = _get_manifest_files(repo_dir)
     _validate_manifest_files(repo_dir, manifest_files)
+    _validate_manifest_file(manifest_files, package_name)
     manifest_file = manifest_files[0]
     return manifest_file
 
