@@ -89,10 +89,10 @@ def clone_repository(repository_dir, target_dir):
     :param target_dir: Directory to copy/clone the repository content in.
     :type target_dir: str
     """
-    # ensure the cmd looks like cp -R $repository_dir/* $target_dir/
+    # ensure the cmd looks like cp -R $repository_dir/. $target_dir/
     if not repository_dir.endswith(os.sep):
         repository_dir += os.sep
-    repository_dir += "*"
+    repository_dir += "."
 
     if not target_dir.endswith(os.sep):
         target_dir += os.sep
