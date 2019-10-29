@@ -1,0 +1,8 @@
+# directories
+__pycache__/
+.pytest_cache/
+.vscode/
+
+# files
+*.pyc
+*.coverage
