@@ -25,9 +25,7 @@ def _build_parser():
 if __name__ == "__main__":
     parser = _build_parser()
     namepsace = parser.parse_args()
-
     location = namepsace.location
-
     level_dir = pathutils.get_level_directory(location)
-    cmd = cmdutils.build_launchcmd_command(level_dir)
-    print(cmd)
+    command = cmdutils.build_launchcmd_command(level_dir)
+    print(command)
