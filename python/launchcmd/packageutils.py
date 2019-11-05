@@ -18,28 +18,28 @@ REGEX_VERSION = re.compile(r"^([\d]+[.][\d]+[.][\d]+)$")
 # =============================================================================
 # private
 # =============================================================================
-def _release_package_contents(repository_dir, relative_filepaths, release_dir):
+def _release_package_contents(src_dir, relative_filepaths, dst_dir):
     """Copies the contents of a package to a directory.
 
-    :param repository_dir: Directory of the repository holding files to copy.
-    :type repository_dir: str
+    :param src_dir: Directory of holding the files to copy.
+    :type src_dir: str
 
     :param relative_filepaths: Relative paths of files to copy from repository.
     :type relative_filepaths: list[str]
 
-    :param release_dir: Release directory to copy repository files to.
-    :type release_dir: str
+    :param dst_dir: Directory to copy files to.
+    :type dst_dir: str
     """
-    if not os.path.exists(release_dir):
-        os.makedirs(release_dir)
+    if not os.path.exists(dst_dir):
+        os.makedirs(dst_dir)
 
     for relative_filepath in relative_filepaths:
-        src_file = os.path.join(repository_dir, relative_filepath)
-        dst_file = os.path.join(release_dir, relative_filepath)
+        src_file = os.path.join(src_dir, relative_filepath)
+        dst_file = os.path.join(dst_dir, relative_filepath)
 
-        dst_dir = os.path.dirname(dst_file)
-        if not os.path.exists(dst_dir):
-            os.makedirs(dst_dir)
+        _dst_dir = os.path.dirname(dst_file)
+        if not os.path.exists(_dst_dir):
+            os.makedirs(_dst_dir)
 
         shutil.copy2(src_file, dst_file)
 
@@ -191,7 +191,7 @@ def release_package(repository_dir, package_name, version, comment, files):
     module_filepath = moduleutils.build_module_filepath(repository_dir, package_name)
     if not os.path.exists(module_filepath):
         msg = "module file for package (name={}) cannot be found: {}"
-        raise IOError(msg.format(package_name, module_filepath))
+        raise FileNotFoundError(msg.format(package_name, module_filepath))
 
     # validate files for release
     validate_files(files, module_filepath)
@@ -208,13 +208,13 @@ def release_package(repository_dir, package_name, version, comment, files):
     release_dir = get_package_release_directory(package_name, version)
     if os.path.exists(release_dir):
         msg = "package (name={}, version={}) has already been released on filesystem: {}"
-        raise IOError(msg.format(package_name, version, release_dir))
+        raise FileExistsError(msg.format(package_name, version, release_dir))
 
     # ensure everything is pushed to git in current branch
     git_status = gitutils.get_status(repository_dir)
     if git_status:
         msg = "package contains changes that are not pushed to remote, push your changes to continue:\n{}"
-        raise IOError(msg.format(os.linesep.join(git_status)))
+        raise ValueError(msg.format(os.linesep.join(git_status)))
 
     # create & push git tag
     gitutils.create_tag(repository_dir, tag_name)
@@ -249,8 +249,8 @@ def get_released_package_versions(package_name):
     return versions
 
 
-def get_installed_packages(level_dir):
-    """Returns the installed package releases of a level.
+def get_installed_packages_tags(level_dir):
+    """Returns the tags of the packages installed on a level.
 
     :param level_dir: Directory of a level.
     :type level_dir: str
@@ -264,6 +264,21 @@ def get_installed_packages(level_dir):
         tags = os.listdir(installed_tags_dir)
 
     return tags
+
+
+def get_installed_packages_directories(level_dir):
+    """Returns the directories of the packages installed on a level.
+
+    :param level_dir: Directory of a level.
+    :type level_dir: str
+
+    :rtype: list[str]
+    """
+    tags = get_installed_packages_tags(level_dir)
+    packages = list(map(split_package_release_tag, tags))
+    packge_dirs = [get_package_install_directory(level_dir, package_name)
+                   for package_name, version in packages]
+    return packge_dirs
 
 
 def install_package(level_dir, package_name, version):
@@ -282,15 +297,15 @@ def install_package(level_dir, package_name, version):
     release_dir = get_package_release_directory(package_name, version)
     if not os.path.exists(release_dir):
         msg = "no release found for package (name={}, version={})"
-        raise IOError(msg.format(package_name, version))
+        raise FileNotFoundError(msg.format(package_name, version))
 
     # check if package is already installed
     tag_name = build_package_release_tag(package_name, version)
-    tags = get_installed_packages(level_dir)
+    tags = get_installed_packages_tags(level_dir)
 
     if tag_name in tags:
         msg = "package (name={}, version={}) already installed on {}"
-        raise IOError(msg.format(package_name, version, level_dir))
+        raise ValueError(msg.format(package_name, version, level_dir))
 
     # check if another version is already installed
     release_to_uninstall = None
@@ -341,19 +356,19 @@ def uninstall_package(level_dir, package_name, version):
     """
     # check if package is installed
     tag_name = build_package_release_tag(package_name, version)
-    tags = get_installed_packages(level_dir)
+    tags = get_installed_packages_tags(level_dir)
 
     if tag_name not in tags:
         msg = "package (name={}, version={}) is not installed on {}"
         raise IOError(msg.format(package_name, version, level_dir))
 
+    # ensure umask is cleared
+    os.umask(0000)
+
     # delete released package
     install_dir = get_package_install_directory(level_dir, package_name)
     subprocess.check_call(["chmod", "-R", "a+w", install_dir])
     shutil.rmtree(install_dir)
-
-    # ensure umask is cleared
-    os.umask(0000)
 
     # delete tag
     installed_tags_dir = pathutils.get_level_installed_tags_dir(level_dir)
@@ -362,7 +377,7 @@ def uninstall_package(level_dir, package_name, version):
     os.remove(tag_filepath)
 
     # remove entire .common structure if no other packages are present
-    tags = get_installed_packages(level_dir)
+    tags = get_installed_packages_tags(level_dir)
     if not tags:
         common_dir = pathutils.get_level_common_dir(level_dir)
         shutil.rmtree(common_dir)
