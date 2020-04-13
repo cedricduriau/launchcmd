@@ -1,0 +1,111 @@
+#!/usr/bin/env python
+
+# stdlib modules
+from argparse import ArgumentParser
+
+# tool modules
+from launchcmd import launchcmd
+
+
+def _build_parser_release(subparser):
+    parser = subparser.add_parser("release")
+
+    # required arguments
+    req_args = parser.add_argument_group("required arguments")
+
+    help = "git repository to release"
+    req_args.add_argument("-r", "--repository", required=True, help=help)
+
+    help = "version the release"
+    req_args.add_argument("-v", "--version", required=True, help=help)
+
+    help = "message of the release"
+    req_args.add_argument("-m", "--message", required=True, help=help)
+
+    return parser
+
+
+def _build_parser_avail(subparser):
+    parser = subparser.add_parser("avail")
+    return parser
+
+
+def _build_parser_list(subparser):
+    parser = subparser.add_parser("list")
+
+    # optional arguments
+    help = "location to list installed packages of"
+    parser.add_argument("-l", "--location", required=False, help=help, default=".")
+
+    return parser
+
+
+def _build_parser_install(subparser):
+    parser = subparser.add_parser("install")
+
+    # required arguments
+    req_args = parser.add_argument_group("required arguments")
+
+    help = "package of a release"
+    req_args.add_argument("-p", "--package", required=True, help=help)
+
+    help = "version of a package release"
+    req_args.add_argument("-v", "--version", required=True, help=help)
+
+    # optional arguments
+    help = "location to install to"
+    parser.add_argument("-l", "--location", required=False, help=help, default=".")
+
+    return parser
+
+
+def _build_parser_uninstall(subparser):
+    parser = subparser.add_parser("uninstall")
+
+    # required arguments
+    req_args = parser.add_argument_group("required arguments")
+
+    help = "package of a release"
+    req_args.add_argument("-p", "--package", required=True, help=help)
+
+    help = "version of a package release"
+    req_args.add_argument("-v", "--version", required=True, help=help)
+
+    # optional arguments
+    help = "location to install to"
+    parser.add_argument("-l", "--location", required=False, help=help, default=".")
+
+    return parser
+
+
+def _build_parser():
+    parser = ArgumentParser()
+    subparsers = parser.add_subparsers(title="actions")
+
+    parser_release = _build_parser_release(subparsers)
+    parser_release.set_defaults(func=launchcmd.release_package)
+
+    parser_avail = _build_parser_avail(subparsers)
+    parser_avail.set_defaults(func=launchcmd.list_released_packages)
+
+    parser_list = _build_parser_list(subparsers)
+    parser_list.set_defaults(func=launchcmd.list_installed_packages)
+
+    parser_install = _build_parser_install(subparsers)
+    parser_install.set_defaults(func=launchcmd.install_package)
+
+    parser_uninstall = _build_parser_uninstall(subparsers)
+    parser_uninstall.set_defaults(func=launchcmd.uninstall_package)
+
+    return parser
+
+
+if __name__ == "__main__":
+    parser = _build_parser()
+    args = parser.parse_args()
+
+    kwargs = vars(args)
+    func = kwargs["func"]
+    kwargs.pop("func")
+
+    func(**kwargs)

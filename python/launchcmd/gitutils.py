@@ -5,7 +5,7 @@ import os
 from launchcmd import shellutils
 
 
-def validate_directory_is_repository(directory):
+def validate_repository(directory):
     """Validates a repository has a .git directory.
 
     :param directory: Directory of a repository.
@@ -17,85 +17,81 @@ def validate_directory_is_repository(directory):
         raise IOError(msg.format(directory))
 
 
-def get_status(repository_dir):
+def get_status(repository):
     """Returns the unstaged changes of a repository,
 
-    :param repository_dir: Directory of a repository.
-    :type repository_dir: str
+    :param repository: Directory of a repository.
+    :type repository: str
 
     :rtype: list[str]
     """
-    cmd = "cd {} && git status --porcelain".format(repository_dir)
+    cmd = "cd {} && git status --porcelain".format(repository)
     status = shellutils.run_check_output(cmd)
     return status
 
 
-def get_tags(repository_dir):
+def get_tags(repository):
     """Returns all tags of a repository.
 
-    :param repository_dir: Directory of a repository.
-    :type repository_dir: str
+    :param repository: Directory of a repository.
+    :type repository: str
 
     :rtype: list[str]
     """
-    cmd = "cd {} && git tag".format(repository_dir)
+    cmd = "cd {} && git tag".format(repository)
     tags = shellutils.run_check_output(cmd)
     return tags
 
 
-def pull_tags(repository_dir):
+def pull_tags(repository):
     """Pulls all tags from the remote locally.
 
-    :param repository_dir: Directory of a repository.
-    :type repository_dir: str
+    :param repository: Directory of a repository.
+    :type repository: str
     """
-    cmd = "cd {} && git pull --quiet --tags".format(repository_dir)
+    cmd = "cd {} && git pull --quiet --tags".format(repository)
     tags = shellutils.run_check_output(cmd)
     return tags
 
 
-def create_tag(repository_dir, tag_name):
+def add(repository, *paths):
+    cmd = "cd {} && git add {}".format(repository, " ".join(paths))
+    shellutils.run_check_output(cmd)
+
+
+def commit(repository, message):
+    cmd = "cd {} && git commit -m \"{}\"".format(repository, message)
+    shellutils.run_check_output(cmd)
+
+
+def push(repository, quiet=True):
+    cmd = "cd {} && git push".format(repository)
+    if quiet:
+        cmd += " -q"
+    shellutils.run_check_output(cmd)
+
+
+def create_tag(repository, tag_name):
     """Creates a new tag in a repository.
 
-    :param repository_dir: Directory of a repository.
-    :type repository_dir: str
+    :param repository: Directory of a repository.
+    :type repository: str
 
     :param tag_name: Name of the tag to create.
     :type tag_name: str
     """
-    cmd = "cd {} && git tag {}".format(repository_dir, tag_name)
+    cmd = "cd {} && git tag {}".format(repository, tag_name)
     shellutils.run_check_output(cmd)
 
 
-def push_tag(repository_dir, tag_name):
+def push_tag(repository, tag_name):
     """Pushes a tag to the remote.
 
-    :param repository_dir: Directory of a repository.
-    :type repository_dir: str
+    :param repository: Directory of a repository.
+    :type repository: str
 
     :param tag_name: Name of the tag to push.
     :type tag_name: str
     """
-    cmd = "cd {} && git push --quiet origin {}".format(repository_dir, tag_name)
-    shellutils.run_check_output(cmd)
-
-
-def clone_repository(repository_dir, target_dir):
-    """Copies the repository to a target directory.
-
-    :param repository_dir: Directory of the repository to copy/clone.
-    :type repository_dir: str
-
-    :param target_dir: Directory to copy/clone the repository content in.
-    :type target_dir: str
-    """
-    # ensure the cmd looks like cp -R $repository_dir/. $target_dir/
-    if not repository_dir.endswith(os.sep):
-        repository_dir += os.sep
-    repository_dir += "."
-
-    if not target_dir.endswith(os.sep):
-        target_dir += os.sep
-
-    cmd = "cp -R {} {}".format(repository_dir, target_dir)
+    cmd = "cd {} && git push --quiet origin {}".format(repository, tag_name)
     shellutils.run_check_output(cmd)
