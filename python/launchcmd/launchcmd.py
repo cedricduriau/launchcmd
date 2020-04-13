@@ -80,7 +80,8 @@ def release_package(repository, version, message):
 
     # copy file to release
     release = releaseutils.get_release_directory(package, version)
-    releaseutils.copy_release_files(repository, release, files)
+    for f in files:
+        releaseutils.release_file(repository, release, f)
 
     # lock release directory
     subprocess.check_call(["chmod", "-R", "-w", release])
