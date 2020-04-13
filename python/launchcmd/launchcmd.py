@@ -16,6 +16,18 @@ from launchcmd import releaseutils
 # public
 # =============================================================================
 def release_package(repository, version, message):
+    """
+    Releases a package.
+
+    :param repository: Repository to release.
+    :type repository: str
+
+    :param version: Version of the release.
+    :type version: str
+
+    :param message: Message of the release.
+    :type message: str
+    """
     repository = os.path.abspath(os.path.expanduser(repository))
 
     # check if repository exists
@@ -75,6 +87,7 @@ def release_package(repository, version, message):
 
 
 def list_released_packages():
+    """Print all released packages."""
     packages = packageutils.get_released_packages()
     for package in sorted(packages.keys()):
         versions = packages[package]
@@ -84,6 +97,18 @@ def list_released_packages():
 
 
 def install_package(package, version, location):
+    """
+    Install a package to a location.
+
+    :param package: Package of the release to install.
+    :type package: str
+
+    :param version: Version of the release to install.
+    :type version: str
+
+    :param location: Location to install to.
+    :type location: str
+    """
     release = packageutils.get_release_directory(package, version)
     install = packageutils.get_install_directory(package, version, location)
     if os.path.exists(install):
@@ -92,6 +117,12 @@ def install_package(package, version, location):
 
 
 def list_installed_packages(location):
+    """
+    Print all installed packages of a location.
+
+    :param location: Directory to print installed packages of.
+    :type location: str
+    """
     location = os.path.abspath(os.path.expanduser(location))
     packages = packageutils.get_installed_packages(location)
     for package in sorted(packages.keys()):
@@ -101,6 +132,18 @@ def list_installed_packages(location):
 
 
 def uninstall_package(package, version, location):
+    """
+    Uninstall a package from a location.
+
+    :param package: Package of the release to uninstall.
+    :type package: str
+
+    :param version: Version of the release to uninstall.
+    :type version: str
+
+    :param location: Location to uninstall from.
+    :type location: str
+    """
     install = packageutils.get_install_directory(package, version, location)
     if not os.path.exists(install):
         raise RuntimeError("{}-{} not installed".format(package, version))
