@@ -6,7 +6,8 @@ from launchcmd import shellutils
 
 
 def validate_repository(directory):
-    """Validates a repository has a .git directory.
+    """
+    Validate a repository has a .git directory.
 
     :param directory: Directory of a repository.
     :type directory: str
@@ -18,7 +19,8 @@ def validate_repository(directory):
 
 
 def get_status(repository):
-    """Returns the unstaged changes of a repository,
+    """
+    Return the unstaged changes of a repository,
 
     :param repository: Directory of a repository.
     :type repository: str
@@ -31,7 +33,8 @@ def get_status(repository):
 
 
 def get_tags(repository):
-    """Returns all tags of a repository.
+    """
+    Return the tags of a repository.
 
     :param repository: Directory of a repository.
     :type repository: str
@@ -44,7 +47,8 @@ def get_tags(repository):
 
 
 def pull_tags(repository):
-    """Pulls all tags from the remote locally.
+    """
+    Pull tags from the remote.
 
     :param repository: Directory of a repository.
     :type repository: str
@@ -55,16 +59,43 @@ def pull_tags(repository):
 
 
 def add(repository, *paths):
+    """
+    Add paths to stage for commit.
+
+    :param repository: Directory of a repository.
+    :type repository: str
+
+    :param paths: Paths to stage for commit.
+    :type paths: tuple(str)
+    """
     cmd = "cd {} && git add {}".format(repository, " ".join(paths))
     shellutils.run_check_output(cmd)
 
 
 def commit(repository, message):
+    """
+    Commit staged changed.
+
+    :param repository: Directory of a repository.
+    :type repository: str
+
+    :param message: Commit message.
+    :type message: str
+    """
     cmd = "cd {} && git commit -m \"{}\"".format(repository, message)
     shellutils.run_check_output(cmd)
 
 
 def push(repository, quiet=True):
+    """
+    Push recent commits.
+
+    :param repository: Directory of a repository.
+    :type repository: str
+
+    :param quiet: Whether to print the output in the console or not.
+    :type quiet: bool
+    """
     cmd = "cd {} && git push".format(repository)
     if quiet:
         cmd += " -q"
@@ -72,7 +103,8 @@ def push(repository, quiet=True):
 
 
 def create_tag(repository, tag_name):
-    """Creates a new tag in a repository.
+    """
+    Create a tag.
 
     :param repository: Directory of a repository.
     :type repository: str
@@ -85,7 +117,8 @@ def create_tag(repository, tag_name):
 
 
 def push_tag(repository, tag_name):
-    """Pushes a tag to the remote.
+    """
+    Push a tag to the remote.
 
     :param repository: Directory of a repository.
     :type repository: str
