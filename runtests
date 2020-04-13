@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-
-pytest -vv --cov-branch --cov-report term-missing --cov=launchcmd ./tests
