@@ -16,7 +16,6 @@ function __launch {
 }
 
 function __land {
-    echo $LCMD_START_LOCATION
     cd $LCMD_START_LOCATION
     unset LCMD_START_LOCATION
 
