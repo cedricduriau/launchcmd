@@ -101,6 +101,6 @@ def get_installed_packages(location):
 
     :rtype: dict[str, list[str]]
     """
-    install_root = settings.os.path.join(location, ".installed")
+    install_root = os.path.join(location, ".installed")
     installed = _get_packages(install_root)
     return installed
