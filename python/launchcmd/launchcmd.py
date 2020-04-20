@@ -177,7 +177,11 @@ def build_launch_command(location):
     # store loaded modules
     set_cmd = "export LC_LOADED_MODULES={}".format(os.path.pathsep.join(modules))
 
-    cmd = load_cmd + " && " + set_cmd
+    if load_cmd:
+        cmd = load_cmd + " && " + set_cmd
+    else:
+        cmd = set_cmd
+
     return cmd
 
 
@@ -189,4 +193,32 @@ def print_launch_command(location):
     :type location: str
     """
     cmd = build_launch_command(location)
+    print(cmd)
+
+
+def build_land_command():
+    """
+    Build the `land` command line.
+
+    :rtype: str
+    """
+    # module unload
+    modules = os.getenv("LC_LOADED_MODULES", [])
+    lines = ["module unload " + module for module in modules]
+    unload_cmd = " && ".join(lines)
+
+    # clear loaded modules
+    unset_cmd = "export LC_LOADED_MODULES="
+
+    if unload_cmd:
+        cmd = unload_cmd + " && " + unset_cmd
+    else:
+        cmd = unset_cmd
+
+    return cmd
+
+
+def print_land_command():
+    """Print the `land` command line."""
+    cmd = build_land_command()
     print(cmd)
