@@ -1,28 +1,35 @@
 #!/usr/bin/env sh
 
-function __launch () {
+function __launch {
+    echo "LAUNCHING ..."
     # build command line
-    local cmd=`launchcmd printlaunchcmd`
-    if [ ! -z $1]
-    then
+    local cmd="launchcmd printlaunchcmd"
+    if [ ! -z $1 ]; then
         cmd="$cmd -l $1"
     fi
 
     # run command line
-    eval $cmd
+    echo $cmd
+    eval `$cmd`
 }
 
-function __land () {
+function __land {
+    echo "LANDING ..."
     # build command line
-    local cmd=`launchcmd printlandcmd`
+    local cmd="launchcmd printlandcmd"
 
     # run command line
-    eval $cmd
+    echo $cmd
+    eval `$cmd`
 }
 
 
-function launch () {
-    __launch
+function launch {
+    if [ "$(type -t land)" = 'function' ]; then
+        land
+    fi
+
+    __launch "$@"
 
     function land () {
         __land
