@@ -88,6 +88,11 @@ def _build_parser_printlaunchcmd(subparser):
     return parser
 
 
+def _build_parser_printlandcmd(subparser):
+    parser = subparser.add_parser("printlandcmd")
+    return parser
+
+
 def _build_parser():
     parser = ArgumentParser()
     subparsers = parser.add_subparsers(title="actions")
@@ -109,6 +114,9 @@ def _build_parser():
 
     parser_printlaunchcmd = _build_parser_printlaunchcmd(subparsers)
     parser_printlaunchcmd.set_defaults(func=launchcmd.print_launch_command)
+
+    parser_printlaunchcmd = _build_parser_printlandcmd(subparsers)
+    parser_printlaunchcmd.set_defaults(func=launchcmd.print_land_command)
 
     return parser
 
