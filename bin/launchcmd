@@ -78,6 +78,16 @@ def _build_parser_uninstall(subparser):
     return parser
 
 
+def _build_parser_printlaunchcmd(subparser):
+    parser = subparser.add_parser("printlaunchcmd")
+
+    # optional arguments
+    help = "location to initialize environment at"
+    parser.add_argument("-l", "--location", required=False, help=help, default=".")
+
+    return parser
+
+
 def _build_parser():
     parser = ArgumentParser()
     subparsers = parser.add_subparsers(title="actions")
@@ -96,6 +106,9 @@ def _build_parser():
 
     parser_uninstall = _build_parser_uninstall(subparsers)
     parser_uninstall.set_defaults(func=launchcmd.uninstall_package)
+
+    parser_printlaunchcmd = _build_parser_printlaunchcmd(subparsers)
+    parser_printlaunchcmd.set_defaults(func=launchcmd.print_launch_command)
 
     return parser
 
