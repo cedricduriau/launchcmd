@@ -203,7 +203,10 @@ def build_land_command():
     :rtype: str
     """
     # module unload
-    modules = os.getenv("LCMD_LOADED_MODULES", "").split(os.pathsep)
+    modules = os.getenv("LCMD_LOADED_MODULES", [])
+    if modules:
+        modules = modules.split(os.pathsep)
+
     lines = ["module unload " + module for module in modules]
     unload_cmd = " && ".join(lines)
 
