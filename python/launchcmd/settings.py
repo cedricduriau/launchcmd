@@ -1,11 +1,7 @@
 # stdlib modules
 import os
+from pathlib import Path
 
 
-def abs(path):
-    return os.path.abspath(os.path.expanduser(path))
-
-
-ROOT = abs(os.getenv("LCMD_ROOT_DIR", "~/.launchcmd"))
+ROOT = Path(os.getenv("LCMD_ROOT_DIR", "~/.launchcmd")).absolute()
 RELEASE_ROOT = os.path.join(ROOT, "released")
-CURRENT_LOCATION = abs(os.getenv("LCMD_CURRENT_LOCATION", ""))
