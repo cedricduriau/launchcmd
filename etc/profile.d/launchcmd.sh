@@ -8,6 +8,8 @@ function __launch {
     local cmd="launchcmd printlaunchcmd"
     if [ ! -z $1 ]; then
         cmd="$cmd -l $1"
+
+        # change directory to given location
         cd $1
     fi
 
@@ -16,6 +18,7 @@ function __launch {
 }
 
 function __land {
+    # change directory back to start location
     cd $LCMD_START_LOCATION
     unset LCMD_START_LOCATION
 
