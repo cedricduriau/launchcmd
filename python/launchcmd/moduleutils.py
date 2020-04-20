@@ -50,8 +50,9 @@ def get_installed_modules(path):
     modules = []
     for package, versions in packages.items():
         for version in versions:
-            package_dir = directory.joinpath(package, version)
+            package_dir = directory.joinpath(".installed", package, version)
             module_f = get_installed_module(package_dir)
-            modules.append(module_f)
+            if os.path.exists(module_f):
+                modules.append(module_f)
 
     return modules
