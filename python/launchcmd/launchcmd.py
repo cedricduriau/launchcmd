@@ -177,7 +177,11 @@ def build_launch_command(location):
     # store loaded modules
     set_cmd = "export LC_LOADED_MODULES={}".format(os.path.pathsep.join(modules))
 
-    cmd = load_cmd + " && " + set_cmd
+    if load_cmd:
+        cmd = load_cmd + " && " + set_cmd
+    else:
+        cmd = set_cmd
+
     return cmd
 
 
@@ -204,7 +208,7 @@ def build_land_command():
     unload_cmd = " && ".join(lines)
 
     # clear loaded modules
-    unset_cmd = "unset LC_LOADED_MODULES"
+    unset_cmd = "export LC_LOADED_MODULES="
 
     if unload_cmd:
         cmd = unload_cmd + " && " + unset_cmd
