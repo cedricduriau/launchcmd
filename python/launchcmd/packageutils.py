@@ -78,7 +78,7 @@ def get_install_directory(package, version, location):
 
     :rtype: str
     """
-    path = os.path.join(location, package, version)
+    path = os.path.join(location, ".installed", package, version)
     return path
 
 
@@ -101,6 +101,6 @@ def get_installed_packages(location):
 
     :rtype: dict[str, list[str]]
     """
-    install_root = settings.os.path.join(location, "installed")
+    install_root = settings.os.path.join(location, ".installed")
     installed = _get_packages(install_root)
     return installed
