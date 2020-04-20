@@ -208,7 +208,7 @@ def build_land_command():
     unload_cmd = " && ".join(lines)
 
     # clear loaded modules
-    unset_cmd = "export LCMD_LOADED_MODULES="
+    unset_cmd = "unset LCMD_LOADED_MODULES"
 
     if unload_cmd:
         cmd = unload_cmd + " && " + unset_cmd
