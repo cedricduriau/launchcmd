@@ -171,11 +171,11 @@ def build_launch_command(location):
         modules.extend(moduleutils.get_installed_modules(parent))
 
     # module load
-    lines = ["module load " + module for module in modules]
+    lines = ["module load " + module for module in reversed(modules)]
     load_cmd = " && ".join(lines)
 
     # store loaded modules
-    set_cmd = "export LC_LOADED_MODULES={}".format(os.path.pathsep.join(modules))
+    set_cmd = "export LCMD_LOADED_MODULES={}".format(os.pathsep.join(modules))
 
     if load_cmd:
         cmd = load_cmd + " && " + set_cmd
@@ -203,12 +203,15 @@ def build_land_command():
     :rtype: str
     """
     # module unload
-    modules = os.getenv("LC_LOADED_MODULES", [])
+    modules = os.getenv("LCMD_LOADED_MODULES", [])
+    if modules:
+        modules = modules.split(os.pathsep)
+
     lines = ["module unload " + module for module in modules]
     unload_cmd = " && ".join(lines)
 
     # clear loaded modules
-    unset_cmd = "export LC_LOADED_MODULES="
+    unset_cmd = "unset LCMD_LOADED_MODULES"
 
     if unload_cmd:
         cmd = unload_cmd + " && " + unset_cmd
