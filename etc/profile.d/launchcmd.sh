@@ -7,7 +7,6 @@ function __launch () {
     then
         cmd="$cmd -l $1"
     fi
-    echo $cmd
 
     # run command line
     eval $cmd
@@ -16,7 +15,6 @@ function __launch () {
 function __land () {
     # build command line
     local cmd=`launchcmd printlandcmd`
-    echo $cmd
 
     # run command line
     eval $cmd
