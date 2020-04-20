@@ -10,7 +10,7 @@ function __launch () {
     echo $cmd
 
     # run command line
-    # eval $cmd
+    eval $cmd
 }
 
 function __land () {
@@ -19,7 +19,7 @@ function __land () {
     echo $cmd
 
     # run command line
-    # eval $cmd
+    eval $cmd
 }
 
 
