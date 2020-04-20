@@ -3,6 +3,7 @@
 function __launch {
     # store current location
     export LCMD_START_LOCATION=`pwd`
+    export LCMD_START_SHELL_PREFIX=$PS1
 
     # build command line
     local cmd="launchcmd printlaunchcmd"
@@ -15,12 +16,20 @@ function __launch {
 
     # run command line
     eval `$cmd`
+
+    # set shell prefix
+    local directory=`basename $PWD`
+    export PS1="[$directory]$PS1"
 }
 
 function __land {
     # change directory back to start location
     cd $LCMD_START_LOCATION
     unset LCMD_START_LOCATION
+
+    # reset shell prefix
+    export PS1=$LCMD_START_SHELL_PREFIX
+    unset LCMD_START_SHELL_PREFIX
 
     # build command line
     local cmd="launchcmd printlandcmd"
