@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import os
 import shutil
 import subprocess
+from pathlib import Path
 
 # tool modules
 from launchcmd import gitutils
@@ -48,9 +49,9 @@ def release_package(repository, version, message):
         raise RuntimeError("tag {} already exists".format(version))
 
     # check if module exists
-    module_file = moduleutils.get_module_file(repository)
-    if not os.path.exists(module_file):
-        raise RuntimeError("no module file found: {}".format(module_file))
+    module = moduleutils.get_repository_module(repository)
+    if not os.path.exists(module):
+        raise RuntimeError("no module file found: {}".format(module))
 
     # read / create manifest
     manifest_file = manifestutils.get_manifest_file(repository)
@@ -149,3 +150,43 @@ def uninstall_package(package, version, location):
     if not os.path.exists(install):
         raise RuntimeError("{}-{} not installed".format(package, version))
     shutil.rmtree(install)
+
+
+def build_launch_command(location):
+    """
+    Build the `launch` command line.
+
+    :param location: Path to initialize environment of.
+    :type location: str
+
+    :rtype: str
+    """
+    # get all file system levels
+    directory = Path(location).absolute()
+    parents = directory.parents
+
+    # get all installed modules
+    modules = moduleutils.get_installed_modules(directory)
+    for parent in parents:
+        modules.extend(moduleutils.get_installed_modules(parent))
+
+    # module load
+    lines = ["module load " + module for module in modules]
+    load_cmd = " && ".join(lines)
+
+    # store loaded modules
+    set_cmd = "export LC_LOADED_MODULES={}".format(os.path.pathsep.join(modules))
+
+    cmd = load_cmd + " && " + set_cmd
+    return cmd
+
+
+def print_launch_command(location):
+    """
+    Print the `launch` command line.
+
+    :param location: Path to initialize environment of.
+    :type location: str
+    """
+    cmd = build_launch_command(location)
+    print(cmd)
