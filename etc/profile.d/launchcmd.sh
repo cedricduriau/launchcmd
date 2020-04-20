@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 
 function __launch {
-    echo "LAUNCHING ..."
     # build command line
     local cmd="launchcmd printlaunchcmd"
     if [ ! -z $1 ]; then
@@ -9,17 +8,14 @@ function __launch {
     fi
 
     # run command line
-    echo $cmd
     eval `$cmd`
 }
 
 function __land {
-    echo "LANDING ..."
     # build command line
     local cmd="launchcmd printlandcmd"
 
     # run command line
-    echo $cmd
     eval `$cmd`
 }
 
