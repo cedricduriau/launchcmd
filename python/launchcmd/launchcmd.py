@@ -171,7 +171,7 @@ def build_launch_command(location):
         modules.extend(moduleutils.get_installed_modules(parent))
 
     # module load
-    lines = ["module load " + module for module in modules]
+    lines = ["module load " + module for module in reversed(modules)]
     load_cmd = " && ".join(lines)
 
     # store loaded modules
