@@ -1,6 +1,5 @@
 # stdlib modules
 import os
-from pathlib import Path
 
 # tool modules
 from launchcmd import packageutils
@@ -44,7 +43,7 @@ def get_installed_modules(path):
 
     :rtype: list[str]
     """
-    directory = Path(path).absolute()
+    directory = os.path.abspath(path)
     packages = packageutils.get_installed_packages(directory)
 
     modules = []

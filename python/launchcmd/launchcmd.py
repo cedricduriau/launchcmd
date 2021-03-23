@@ -3,7 +3,6 @@ from __future__ import absolute_import
 import os
 import shutil
 import subprocess
-from pathlib import Path
 
 # tool modules
 from launchcmd import gitutils
@@ -162,7 +161,7 @@ def build_launch_command(location):
     :rtype: str
     """
     # get all file system levels
-    directory = Path(location).absolute()
+    directory = os.path.abspath(location)
     parents = directory.parents
 
     # get all installed modules
