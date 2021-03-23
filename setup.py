@@ -10,7 +10,7 @@ package_dir = os.path.join(os.path.dirname(f), "python")
 sys.path.insert(0, package_dir)
 from launchcmd import __version__  # noqa
 
-requirements_dev = ["flake8", "radon"]
+requirements_dev = ["flake8", "radon", "flake8-polyfill"]
 
 
 setup(name="launchcmd",
